@@ -33,3 +33,11 @@ lerna-debug.log*
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+.vs/slnx.sqlite
+.vs/VSWorkspaceState.json
+.vs/nestbasic/FileContentIndex/7175c015-ae29-4354-b30a-af82a8115f77.vsidx
+.vs/nestbasic/FileContentIndex/a4c8dcea-2732-4663-bff9-7dcaf5370f45.vsidx
+.vs/nestbasic/v17/.wsuo
+.vs/slnx.sqlite
+.vs/nestbasic/FileContentIndex/a4c8dcea-2732-4663-bff9-7dcaf5370f45.vsidx
+.gitignore
