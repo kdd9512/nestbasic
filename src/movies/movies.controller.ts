@@ -1,13 +1,20 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
+import { Movie } from './entities/movie.entity';
+import { MoviesService } from './movies.service';
 
 
 @Controller("/movies") // 스프링으로 치면 @RestController 의 기본주소와 똑같은 역할.
 export class MoviesController {
 
+  // Service 를 받아온다.
+  // import 방식으로 받아올 수 도 있으나(NodeJs 에서 사용하는 방식),
+  // NestJs 에서는 보통 생성자를 이용하여 Service 를 불러온다.
+  constructor(private readonly moviesService:MoviesService) {}
+
   // get
   @Get()
-  getAll() {
-    return "this will return all movies";
+  getAll():Movie[] {
+    return this.moviesService.getAll();
   }
 
   /**
@@ -26,27 +33,21 @@ export class MoviesController {
     정렬이나 필터링을 한다면 Query Parameter를 사용하는 것이 Best Practice
    */
 
-  @Get("/search")
-  searchMovie(@Query("keyword") keyword: string) {
-    return `I want to search for a movie with a title. title is ${keyword}`;
-  }
-
   @Get("/:id")
-  getOne(@Param('id') movieId: string) {
-    return `this will return one movies [id : ${movieId}]`;
+  getOne(@Param('id') movieId: string):Movie {
+    return this.moviesService.getOne(movieId);
   }
 
   // post
   @Post()
   create(@Body() movieData) {
-    console.log(movieData);
-    return 'this will create a movie';
+    return this.moviesService.create(movieData);
   }
 
   // delete
   @Delete("/:id")
   remove(@Param("id") movieId: string) {
-    return `this will remove a movie [id : ${movieId}]`;
+    return this.moviesService.deleteOne(movieId);
   }
 
   // update
