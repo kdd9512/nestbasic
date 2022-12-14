@@ -53,10 +53,11 @@ export class MoviesController {
   // update
   @Patch("/:id")
   patchMovie(@Param("id") movieId: string, @Body() updateData) {
-    return {
-      updateMovie: movieId,
-      ...updateData // updateData 내에 존재하는 모든 데이터를 가져온다.
-    }
+    // return {
+    //   updateMovie: movieId,
+    //   ...updateData // updateData 내에 존재하는 모든 데이터를 가져온다.
+    // }
+    return this.moviesService.update(movieId, updateData);
   }
 
 
