@@ -8,7 +8,7 @@
 // DAO 는 Service 에게서 넘겨받은 데이터를 가지고 SQL 을 작동. 
 
 // 이 예제는 readonly 속성을 가지고 있어 DTO 보다는 VO 클래스에 가깝다 할 수 있다..
-import { IsString, IsNumber} from "class-validator";
+import { IsString, IsNumber, IsOptional} from "class-validator";
 
 export class CreateMovieDto {
   @IsString()
@@ -18,5 +18,6 @@ export class CreateMovieDto {
   readonly year:number;
 
   @IsString({each:true})
+  @IsOptional() // 이 variable 을 선택사항으로 지정한다.
   readonly genres:string[];
 }

@@ -1,5 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { CreateMovieDto } from './dto/create-movie.dto';
+import { UpdateMovieDto } from './dto/update-movie.dto';
 import { Movie } from './entities/movie.entity';
 import { MoviesService } from './movies.service';
 
@@ -53,7 +54,7 @@ export class MoviesController {
 
   // update
   @Patch("/:id")
-  patchMovie(@Param("id") movieId: number, @Body() updateData) {
+  patchMovie(@Param("id") movieId: number, @Body() updateData:UpdateMovieDto) {
     // return {
     //   updateMovie: movieId,
     //   ...updateData // updateData 내에 존재하는 모든 데이터를 가져온다.
