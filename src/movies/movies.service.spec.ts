@@ -2,6 +2,8 @@ import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { MoviesService } from './movies.service';
 
+
+// 테스트 : npm run test:cov
 describe('MoviesService', () => {
   let service: MoviesService;
 
@@ -52,6 +54,45 @@ describe('MoviesService', () => {
       }
     });
 
+  });
+
+  describe("deleteOne", () => {
+    it('delete a movie', () => {
+      // 삭제가 정상적으로 동작할 경우. 지울게 필요하므로 일단 create
+      service.create({
+        title: "Test",
+        genres:['test'],
+        year:9999
+      });
+      const beforeDelete = service.getAll().length;
+      service.deleteOne(1);
+      const afterDelete = service.getAll().length;
+      // 데이터가 하나 줄어들면 길이가 하나 줄어들것이므로 이전보다 그 길이가 짧아야 할 것.
+      expect(afterDelete).toBeLessThan(beforeDelete);
+    });
+
+    // 삭제할게 없을경우.
+    it('should return a 404' ,() => {
+      try {
+        service.deleteOne(3454);
+      } catch(e) {
+        expect(e).toBeInstanceOf(NotFoundException);
+      }
+    });
+  });
+
+  describe("create", () => {
+    it('should create a movie', () => {
+      const beforeCreated = service.getAll().length; // 생성전
+      service.create({
+        title: "Test",
+        genres:['test'],
+        year:9999
+      });
+      const afterCreated = service.getAll().length; // 생성후
+      console.log(beforeCreated, afterCreated)
+      expect(afterCreated).toBeGreaterThan(beforeCreated);
+    });
   });
 
 });
