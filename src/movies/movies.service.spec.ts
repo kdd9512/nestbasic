@@ -7,12 +7,18 @@ import { MoviesService } from './movies.service';
 describe('MoviesService', () => {
   let service: MoviesService;
 
+  // test 를 실행하기 전 실행
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [MoviesService],
     }).compile();
-
     service = module.get<MoviesService>(MoviesService);
+
+    service.create({
+      title: "Test",
+      genres:['test'],
+      year:9999
+    });
   });
 
   it('should be defined', () => {
@@ -92,6 +98,15 @@ describe('MoviesService', () => {
       const afterCreated = service.getAll().length; // 생성후
       console.log(beforeCreated, afterCreated)
       expect(afterCreated).toBeGreaterThan(beforeCreated);
+    });
+  });
+
+  describe("update", () => {
+    it('update movie info', () => {
+    
+      service.update(1, {title:"Updated!"});
+      const movie = service.getOne(1);
+      expect(movie.title).toEqual("Updated!");
     });
   });
 
