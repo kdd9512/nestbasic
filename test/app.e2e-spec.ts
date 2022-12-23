@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
 
@@ -8,12 +8,24 @@ import { AppModule } from './../src/app.module';
 describe('AppController (e2e)', () => {
   let app: INestApplication;
 
-  beforeEach(async () => {
+  // beforeEach(async () => {
+  // 테스트가 새로 실행될 때 마다 beforeEach 로 매 번 실행시키는 것 보다는 
+  // 전제조건으로 깔려야 하는 부분은 한 번만 생성하고 그대로 저장하는 것이 좋다.
+  // 
+  beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
 
+    
     app = moduleFixture.createNestApplication();
+    // 실제 구동되는 서비스의 조건.
+    // main.ts 에 설정되어 있던 pipe 설정을 test 에서도 적용해주어야 한다.
+    app.useGlobalPipes(new ValidationPipe({
+      whitelist:true, // 허용한 데이터만 받을 것인가?
+      forbidNonWhitelisted:true, // 허용 안한건 전부 거부할 것인가?
+      transform:true, // 받은 데이터를 알맞은 타입으로 변환할 것인가?
+    }));
     await app.init();
   });
 
@@ -51,6 +63,22 @@ describe('AppController (e2e)', () => {
 
   })
 
+  describe("/movies/:id", () => {
+    // todo 는 일종의 메모같은 것으로 해야 하는 일을 기록하여 터미널에서 표시할 때 쓸 수 있다.
 
+    // 이하의 GET 통신은 오류가 발생한다.
+    // getOne 에서 받는 param 이 number 가 아니라 string 으로 들어온다.
+    // 이는 main.ts 에서 transform 옵션을 활성화시켰기 때문인데,
+    // test 를 행할 때 역시 해당 옵션을 적용해서 테스트해야만(=실제 구동되는 서비스와 조건을 맞춰줘야만)
+    // 원하는 결과를 얻을 수 있게 된다.
+    it("GET 200", () => { 
+      return request(app.getHttpServer())
+      .get("/movies/1")
+      .expect(200);
+     });
+
+    it.todo("DELETE");
+    it.todo("PATCH");
+  });
 
 });
