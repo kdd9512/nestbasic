@@ -13,6 +13,7 @@ export class MoviesService {
   }
 
   getOne(id:number): Movie{
+    console.log(id);
     const movie = this.movies.find(movie => movie.id === id);
     // 존재하지 않는 ID 로 영화정보를 호출했을 경우 처리.
     if(!movie) {
