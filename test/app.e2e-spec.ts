@@ -4,6 +4,7 @@ import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
 
 // E2E 테스트 예제.
+// 이하의 테스트들을 한꺼번에 테스트할 수 있는 기능.
 // end to end 테스트 기동 npm run test:e2e
 describe('AppController (e2e)', () => {
   let app: INestApplication;
@@ -23,7 +24,7 @@ describe('AppController (e2e)', () => {
     // main.ts 에 설정되어 있던 pipe 설정을 test 에서도 적용해주어야 한다.
     app.useGlobalPipes(new ValidationPipe({
       whitelist:true, // 허용한 데이터만 받을 것인가?
-      forbidNonWhitelisted:true, // 허용 안한건 전부 거부할 것인가?
+      forbidNonWhitelisted:true, // 허용 안한 유형의 데이터는(=entity 에서 정의한) 전부 거부할 것인가?
       transform:true, // 받은 데이터를 알맞은 타입으로 변환할 것인가?
     }));
     await app.init();
@@ -44,7 +45,7 @@ describe('AppController (e2e)', () => {
         .expect([]); // return 값으로 Array 를 받을 것으로 예상된다.
     });
 
-    it("POST", () => {
+    it("POST 201", () => {
       return request(app.getHttpServer())
         .post("/movies") // 통신을 하는데 post 방식으로 괄호 안 주소와 통신을 하고,
         .send({
@@ -95,6 +96,22 @@ describe('AppController (e2e)', () => {
       .delete("/movies/1")
       .expect(200);
     });
+
+    it("POST 404", () => {
+      return request(app.getHttpServer())
+        .post("/movies") 
+        .send({
+          title: "test"
+          , year: 2020
+          , genres: ['test']
+          // other는 허용되지 않은 유형의 데이터이다.
+          // 허용되지 않은 유형의 데이터(=entity 에서 정의하지 않음)를 전부 ban 하는 
+          // "forbidNonWhitelisted" 를 활성화(true) 하였으므로 잘못된 요청이 갈 것.
+          , other:"thing" 
+        })
+        .expect(400); // 응답으로 400(Bad Request) 를 받을 것으로 예상.
+    });
+
 
   });
 
